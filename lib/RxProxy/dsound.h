@@ -31,15 +31,17 @@ PVOID pfnAheadLib_DirectSoundCaptureCreate8;
 HMODULE g_hmRealDll = NULL;
 
 
+VOID WINAPI FreeLibrary()
+{
+	if (g_hmRealDll)
+	{
+		FreeLibrary(g_hmRealDll);
+	}
+}
+
 FARPROC GetAddress(PCSTR pszProcName)
 {
-	FARPROC pFunc = GetProcAddress(g_hmRealDll, pszProcName);
-	if (pFunc != NULL) return pFunc;
-
-	MessageBoxW(NULL, L"GetProcAddress Failed!", L"Proxy Dll", MB_OK);
-	ExitProcess(0);
-
-	return NULL;
+	return GetProcAddress(g_hmRealDll, pszProcName);
 }
 
 VOID ProxyDll()

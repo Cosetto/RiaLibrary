@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <Windows.h>
 
 #pragma comment(linker, "/EXPORT:GetFileVersionInfoA=_AheadLib_GetFileVersionInfoA,@1")
@@ -41,15 +41,17 @@ PVOID pfnAheadLib_VerQueryValueW;
 
 HMODULE g_hmRealDll = NULL;
 
+VOID WINAPI FreeLibrary()
+{
+	if (g_hmRealDll)
+	{
+		FreeLibrary(g_hmRealDll);
+	}
+}
+
 FARPROC GetAddress(PCSTR pszProcName)
 {
-	FARPROC pFunc = GetProcAddress(g_hmRealDll, pszProcName);
-	if (pFunc != NULL) return pFunc;
-
-	MessageBoxW(NULL, L"GetProcAddress Failed!", L"Proxy Dll", MB_OK);
-	ExitProcess(0);
-
-	return NULL;
+	return GetProcAddress(g_hmRealDll, pszProcName);
 }
 
 VOID ProxyDll()
